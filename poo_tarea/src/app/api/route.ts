@@ -19,7 +19,7 @@ function validateBook(data: any) {
   } else if (typeof data.title !== "string") {
     errors.push("title must be a string");
   } else if (data.title.length < 3) {
-    errors.push("titulo debe tener almenos 3 caracteres");
+    errors.push("title must be at least 3 characters long");
   }
 
   if (!data.description) {
@@ -27,7 +27,7 @@ function validateBook(data: any) {
   } else if (typeof data.description !== "string") {
     errors.push("description must be a string");
   } else if (data.description.length < 10) {
-    errors.push("descripcion debe tener almenos 10 caracteres");
+    errors.push("description must be at least 10 characters long");
   }
 
   if (!data.author) {
@@ -35,7 +35,7 @@ function validateBook(data: any) {
   } else if (typeof data.author !== "string") {
     errors.push("author must be a string");
   } else if (!/^[a-zA-Z\s]+$/.test(data.author)) {
-    errors.push("author debe tener solo letras y espacios");
+    errors.push("author must contain only letters and spaces");
   }
 
   return errors;
@@ -56,16 +56,19 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await sql`SELECT 1`;
+    await sql`
+      INSERT INTO books (id, title, description, author)
+      VALUES (${data.id}, ${data.title}, ${data.description}, ${data.author})
+    `;
 
     return NextResponse.json({
-      message: "Valid book data and database connection successful",
+      message: "Book inserted successfully",
       book: data,
     });
   } catch (error: any) {
-    console.error("DB Connection Error:", error);
+    console.error("DB Insert Error:", error);
     return NextResponse.json(
-      { error: "Database connection failed", details: error.message },
+      { error: "Failed to insert book", details: error.message },
       { status: 500 }
     );
   }
