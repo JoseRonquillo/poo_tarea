@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import postgres from "postgres";
+
+const connectionString =
+  "postgresql://postgres.lkjmbgfbsbrvzleqsqzw:Doritos74@aws-1-us-east-2.pooler.supabase.com:6543/postgres";
+const sql = postgres(connectionString);
 
 function validateBook(data: any) {
   const errors: string[] = [];
@@ -14,7 +19,7 @@ function validateBook(data: any) {
   } else if (typeof data.title !== "string") {
     errors.push("title must be a string");
   } else if (data.title.length < 3) {
-    errors.push("title must be at least 3 characters long");
+    errors.push("titulo debe tener almenos 3 caracteres");
   }
 
   if (!data.description) {
@@ -22,7 +27,7 @@ function validateBook(data: any) {
   } else if (typeof data.description !== "string") {
     errors.push("description must be a string");
   } else if (data.description.length < 10) {
-    errors.push("description must be at least 10 characters long");
+    errors.push("descripcion debe tener almenos 10 caracteres");
   }
 
   if (!data.author) {
@@ -30,7 +35,7 @@ function validateBook(data: any) {
   } else if (typeof data.author !== "string") {
     errors.push("author must be a string");
   } else if (!/^[a-zA-Z\s]+$/.test(data.author)) {
-    errors.push("author must contain only letters and spaces");
+    errors.push("author debe tener solo letras y espacios");
   }
 
   return errors;
@@ -47,14 +52,21 @@ export async function POST(request: NextRequest) {
   const errors = validateBook(data);
 
   if (errors.length > 0) {
-    return NextResponse.json(
-      { errors },
-      { status: 422 } 
-    );
+    return NextResponse.json({ errors }, { status: 422 });
   }
 
-  return NextResponse.json({
-    message: "Libro es valido",
-    book: data,
-  });
+  try {
+    await sql`SELECT 1`;
+
+    return NextResponse.json({
+      message: "Valid book data and database connection successful",
+      book: data,
+    });
+  } catch (error: any) {
+    console.error("DB Connection Error:", error);
+    return NextResponse.json(
+      { error: "Database connection failed", details: error.message },
+      { status: 500 }
+    );
+  }
 }
