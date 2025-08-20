@@ -23,15 +23,13 @@ export class DependencyContainer {
   }
 
   private registerDependencies(): void {
-    // Registrar dependencias
     this.dependencies.set('IDatabaseConnection', new DatabaseConnection());
     this.dependencies.set('IBookValidator', new BookValidator());
     
-    // BookRepository necesita IDatabaseConnection
     const dbConnection = this.dependencies.get('IDatabaseConnection');
     this.dependencies.set('IBookRepository', new BookRepository(dbConnection));
     
-    // BookService necesita IBookRepository e IBookValidator
+
     const bookRepository = this.dependencies.get('IBookRepository');
     const bookValidator = this.dependencies.get('IBookValidator');
     this.dependencies.set('IBookService', new BookService(bookRepository, bookValidator));

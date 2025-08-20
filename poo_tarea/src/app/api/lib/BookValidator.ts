@@ -11,13 +11,11 @@ export class BookValidator implements IBookValidator {
       errors.push(error.message);
     }
 
-
     try {
       ValueObjectFactory.createDescription(data.description || '');
     } catch (error: any) {
       errors.push(error.message);
     }
-
 
     try {
       ValueObjectFactory.createAuthor(data.author || '');
@@ -39,6 +37,7 @@ export class BookValidator implements IBookValidator {
     if (!hasFieldsToUpdate) {
       errors.push('At least one field (title, description, or author) must be provided for update');
     }
+
 
     if (data.title !== undefined) {
       try {

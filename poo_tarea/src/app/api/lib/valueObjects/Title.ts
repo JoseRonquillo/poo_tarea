@@ -29,7 +29,6 @@ export class Title extends ValueObject<string> {
     return new Title(value.trim());
   }
   
-  // Método especial para updates donde el título podría ser opcional
   public static createOptional(value: string | undefined): Title | undefined {
     if (value === undefined || value === null) {
       return undefined;
