@@ -1,7 +1,8 @@
+import { IBookValidator } from './interfaces/IBookValidator';
 import { ValueObjectFactory } from './valueObjects/ValueObjectFactory';
 
-export class BookValidator {
-  public static validateBook(data: any): string[] {
+export class BookValidator implements IBookValidator {
+  public validateBook(data: any): string[] {
     const errors: string[] = [];
 
     try {
@@ -33,7 +34,7 @@ export class BookValidator {
     return errors;
   }
 
-  public static validateBookUpdate(data: any): string[] {
+  public validateBookUpdate(data: any): string[] {
     const errors: string[] = [];
 
     if (data.title !== undefined) {
@@ -63,7 +64,7 @@ export class BookValidator {
     return errors;
   }
 
-  public static hasErrors(errors: string[]): boolean {
+  public hasErrors(errors: string[]): boolean {
     return errors.length > 0;
   }
 }

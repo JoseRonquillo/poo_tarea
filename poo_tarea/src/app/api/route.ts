@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { BookService } from "./lib/BookService";
+import { DependencyContainer } from "./lib/DependencyContainer";
+import { IBookService } from "./lib/interfaces/IBookService";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     
-    const bookService = new BookService();
+    const container = DependencyContainer.getInstance();
+    const bookService = container.resolve<IBookService>('IBookService');
     
     if (id) {
       // Obtener un libro específico
@@ -52,7 +54,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
-    const bookService = new BookService();
+    const container = DependencyContainer.getInstance();
+    const bookService = container.resolve<IBookService>('IBookService');
+    
     const result = await bookService.createBook(data);
 
     if (!result.success) {
@@ -79,7 +83,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Preparación para los próximos commits (PUT y DELETE)
 export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -93,7 +96,9 @@ export async function PUT(request: NextRequest) {
       );
     }
     
-    const bookService = new BookService();
+    const container = DependencyContainer.getInstance();
+    const bookService = container.resolve<IBookService>('IBookService');
+    
     const result = await bookService.updateBook(Number(id), data);
 
     if (!result.success) {
@@ -132,7 +137,9 @@ export async function DELETE(request: NextRequest) {
       );
     }
     
-    const bookService = new BookService();
+    const container = DependencyContainer.getInstance();
+    const bookService = container.resolve<IBookService>('IBookService');
+    
     const result = await bookService.deleteBook(Number(id));
 
     if (!result.success) {

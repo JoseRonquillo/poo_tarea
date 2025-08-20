@@ -1,10 +1,12 @@
+import { IBookRepository } from './interfaces/IBookRepository';
+import { IDatabaseConnection } from './interfaces/IDatabaseConnection';
 import { DatabaseConnection } from './DatabaseConnection';
 
-export class BookRepository {
-  private db: DatabaseConnection;
+export class BookRepository implements IBookRepository {
+  private db: IDatabaseConnection;
 
-  constructor() {
-    this.db = DatabaseConnection.getInstance();
+  constructor(databaseConnection?: IDatabaseConnection) {
+    this.db = databaseConnection || DatabaseConnection.getInstance();
   }
 
   public async insertBook(bookData: any): Promise<{ success: boolean; data?: any; error?: string }> {

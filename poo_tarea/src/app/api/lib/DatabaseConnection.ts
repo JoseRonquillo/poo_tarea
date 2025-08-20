@@ -1,6 +1,7 @@
 import postgres from 'postgres';
+import { IDatabaseConnection } from './interfaces/IDatabaseConnection';
 
-export class DatabaseConnection {
+export class DatabaseConnection implements IDatabaseConnection {
   private sql: any;
   private static instance: DatabaseConnection;
 
