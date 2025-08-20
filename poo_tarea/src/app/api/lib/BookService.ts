@@ -18,7 +18,6 @@ export class BookService implements IBookService {
   }
 
   public async createBook(bookData: any): Promise<{ success: boolean; data?: any; errors?: string[]; error?: string }> {
-    // Validar datos usando Value Objects
     const errors = this.bookValidator.validateBook(bookData);
     
     if (this.bookValidator.hasErrors(errors)) {
@@ -26,21 +25,16 @@ export class BookService implements IBookService {
     }
 
     try {
-      // Crear Value Objects para garantizar la integridad de los datos
-      const bookId = ValueObjectFactory.createBookId(bookData.id);
       const title = ValueObjectFactory.createTitle(bookData.title);
       const description = ValueObjectFactory.createDescription(bookData.description);
       const author = ValueObjectFactory.createAuthor(bookData.author);
 
-      // Preparar datos para la base de datos
       const dbData = {
-        id: bookId.getValue(),
         title: title.getValue(),
         description: description.getValue(),
         author: author.getValue()
       };
 
-      // Insertar en la base de datos
       const result = await this.bookRepository.insertBook(dbData);
       
       if (!result.success) {
@@ -57,9 +51,13 @@ export class BookService implements IBookService {
     return await this.bookRepository.getAllBooks();
   }
 
+  public async getBooksCount(): Promise<{ success: boolean; data?: number; error?: string }> {
+    return await this.bookRepository.getBooksCount();
+  }
+
   public async getBookById(id: number): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
-      // Validar ID usando Value Object
+
       const bookId = ValueObjectFactory.createBookId(id);
       return await this.bookRepository.getBookById(bookId.getValue());
     } catch (error: any) {
@@ -68,7 +66,6 @@ export class BookService implements IBookService {
   }
 
   public async updateBook(id: number, bookData: any): Promise<{ success: boolean; data?: any; errors?: string[]; error?: string }> {
-    // Validar datos
     const errors = this.bookValidator.validateBookUpdate(bookData);
     
     if (this.bookValidator.hasErrors(errors)) {
@@ -76,10 +73,8 @@ export class BookService implements IBookService {
     }
 
     try {
-      // Validar ID usando Value Object
       const bookId = ValueObjectFactory.createBookId(id);
 
-      // Preparar datos para la actualización
       const updateData: any = {};
       
       if (bookData.title !== undefined) {
@@ -97,7 +92,6 @@ export class BookService implements IBookService {
         updateData.author = author.getValue();
       }
 
-      // Actualizar en la base de datos
       const result = await this.bookRepository.updateBook(bookId.getValue(), updateData);
       
       if (!result.success) {
@@ -112,7 +106,6 @@ export class BookService implements IBookService {
 
   public async deleteBook(id: number): Promise<{ success: boolean; error?: string }> {
     try {
-      // Validar ID usando Value Object
       const bookId = ValueObjectFactory.createBookId(id);
       return await this.bookRepository.deleteBook(bookId.getValue());
     } catch (error: any) {
