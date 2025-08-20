@@ -6,24 +6,18 @@ export class BookValidator implements IBookValidator {
     const errors: string[] = [];
 
     try {
-      if (data.id !== undefined) {
-        ValueObjectFactory.createBookId(data.id);
-      }
-    } catch (error: any) {
-      errors.push(error.message);
-    }
-
-    try {
       ValueObjectFactory.createTitle(data.title || '');
     } catch (error: any) {
       errors.push(error.message);
     }
+
 
     try {
       ValueObjectFactory.createDescription(data.description || '');
     } catch (error: any) {
       errors.push(error.message);
     }
+
 
     try {
       ValueObjectFactory.createAuthor(data.author || '');
@@ -37,9 +31,18 @@ export class BookValidator implements IBookValidator {
   public validateBookUpdate(data: any): string[] {
     const errors: string[] = [];
 
+    const hasFieldsToUpdate = 
+      data.title !== undefined || 
+      data.description !== undefined || 
+      data.author !== undefined;
+    
+    if (!hasFieldsToUpdate) {
+      errors.push('At least one field (title, description, or author) must be provided for update');
+    }
+
     if (data.title !== undefined) {
       try {
-        ValueObjectFactory.createTitle(data.title);
+        ValueObjectFactory.createTitleOptional(data.title);
       } catch (error: any) {
         errors.push(error.message);
       }
@@ -47,7 +50,7 @@ export class BookValidator implements IBookValidator {
 
     if (data.description !== undefined) {
       try {
-        ValueObjectFactory.createDescription(data.description);
+        ValueObjectFactory.createDescriptionOptional(data.description);
       } catch (error: any) {
         errors.push(error.message);
       }
@@ -55,7 +58,7 @@ export class BookValidator implements IBookValidator {
 
     if (data.author !== undefined) {
       try {
-        ValueObjectFactory.createAuthor(data.author);
+        ValueObjectFactory.createAuthorOptional(data.author);
       } catch (error: any) {
         errors.push(error.message);
       }
